@@ -1,0 +1,39 @@
+# Variables
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
+EIGEN_DIR = @EIGEN_DIR@
+OPENMP_FLAG = @OPENMP_FLAG@
+DESTDIR = @DESTDIR@
+
+# Source files
+SRCS = src/main.cpp src/utils.cpp
+
+# Object files
+OBJS = $(SRCS:.cpp=.o)
+
+# Target executable
+TARGET = my_program
+
+# Default target
+all: $(TARGET)
+
+# Build the program
+$(TARGET): $(OBJS)
+    $(CXX) $(CXXFLAGS) -I$(EIGEN_DIR) $(OPENMP_FLAG) -o $(TARGET) $(OBJS)
+
+# Compile source files into object files
+%.o: %.cpp
+    $(CXX) $(CXXFLAGS) -I$(EIGEN_DIR) $(OPENMP_FLAG) -c $< -o $@
+
+# Clean up build files
+clean:
+    rm -f $(OBJS) $(TARGET)
+
+# Install the program
+install: $(TARGET)
+    mkdir -p $(DESTDIR)/bin
+    cp $(TARGET) $(DESTDIR)/bin/
+
+# Uninstall the program
+uninstall:
+    rm -f $(DESTDIR)/bin/$(TARGET)

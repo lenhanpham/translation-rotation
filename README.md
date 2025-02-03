@@ -32,8 +32,17 @@ The program is at experimental step. There can be errors and bugs.
 
 Save the input parameters in a file (e.g., input_file.txt).
 
-Compile the program:
-g++ -O3 -march=native -fopenmp -std=c++17 -I/path/to/eigen main.cpp utils.cpp -o process_xyz
+Make the script executable:
+
+chmod +x configure
+
+Run the script with required options:
+
+./configure --eigen-dir=/path/to/eigen --prefix=/usr/local
+
+Build the project:
+
+make install
 
 
 Run the program with the input file:

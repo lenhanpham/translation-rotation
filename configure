@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Default values
+CXX=${CXX:-g++}
+CXXFLAGS="-Wall -std=c++17"
+EIGEN_DIR=""
+OPENMP_FLAG="-fopenmp"
+DESTDIR="/usr/local"
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  --cxx=COMPILER      Specify the C++ compiler (default: g++)"
+    echo "  --cxxflags=FLAGS    Specify additional C++ compiler flags"
+    echo "  --eigen-dir=PATH    Path to the Eigen library directory"
+    echo "  --disable-openmp    Disable OpenMP support"
+    echo "  --prefix=DIR        Installation directory (default: /usr/local)"
+    exit 1
+}
+
+# Parse command-line arguments
+for arg in "$@"; do
+    case "$arg" in
+        --cxx=*)
+            CXX="${arg#*=}"
+            ;;
+        --cxxflags=*)
+            CXXFLAGS="$CXXFLAGS ${arg#*=}"
+            ;;
+        --eigen-dir=*)
+            EIGEN_DIR="${arg#*=}"
+            ;;
+        --disable-openmp)
+            OPENMP_FLAG=""
+            ;;
+        --prefix=*)
+            DESTDIR="${arg#*=}"
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            usage
+            ;;
+    esac
+done
+
+# Check if Eigen directory is provided
+if [ -z "$EIGEN_DIR" ]; then
+    echo "Error: Please specify the path to the Eigen library using --eigen-dir."
+    usage
+fi
+
+# Check if Eigen headers exist
+if [ ! -d "$EIGEN_DIR/Eigen" ]; then
+    echo "Error: Could not find Eigen headers in $EIGEN_DIR."
+    exit 1
+fi
+
+# Generate the Makefile
+echo "Generating Makefile..."
+sed \
+    -e "s|@CXX@|$CXX|" \
+    -e "s|@CXXFLAGS@|$CXXFLAGS|" \
+    -e "s|@EIGEN_DIR@|$EIGEN_DIR|" \
+    -e "s|@OPENMP_FLAG@|$OPENMP_FLAG|" \
+    -e "s|@DESTDIR@|$DESTDIR|" \
+    Makefile.in > Makefile
+
+echo "Configuration complete. Run 'make' to build the project."
