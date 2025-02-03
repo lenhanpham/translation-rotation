@@ -54,6 +54,7 @@ output_dir: output_xyz_files # Directory to store output files
 \# Files to process
 
 files_set1: set1_1.xyz set1_2.xyz set1_3.xyz
+
 files_set2: set2_1.xyz set2_2.xyz set2_3.xyz
 
 \# Indices for translation and rotation
